@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import './BoardDetail.scss';
 
 const posts = [
@@ -28,37 +28,20 @@ const posts = [
 
 const BoardDetail = () => {
   const { id } = useParams(); // URL 파라미터에서 id 가져오기
+  const navigate = useNavigate(); // useNavigate 훅 사용
   const post = posts.find((post) => post.id === Number(id)); // 해당 id의 게시물 찾기
 
-  //댓글 목록과 새 댓글 상태 관리
+  // 댓글 목록과 새 댓글 상태 관리
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [commenterCount, setCommenterCount] = useState(1); // 익명 작성자의 숫자 관리
 
-   // 좋아요 상태 관리
-   const [likes, setLikes] = useState(0);
-   const [hasLiked, setHasLiked] = useState(false);
+  // 좋아요 상태 관리
+  const [likes, setLikes] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
 
-  // 컴포넌트가 처음 렌더링될 때 localStorage에서 댓글 데이터 불러오기
-  useEffect(() => {
-    const storedComments = localStorage.getItem(`comments_${id}`);
-    const storedLikes = localStorage.getItem(`likes_${id}`);
-    const userHasLiked = localStorage.getItem(`hasLiked_${id}`);
-
-    if (storedComments) {
-      setComments(JSON.parse(storedComments));
-    }
-
-    if (storedLikes) {
-      setLikes(Number(storedLikes));
-    }
-
-    if (userHasLiked) {
-      setHasLiked(true);
-    }
-  }, [id]);
-
-   // 댓글 작성 처리 함수
-   const handleCommentSubmit = (e) => {
+  // 댓글 작성 처리 함수
+  const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (newComment.trim() === '') return; // 빈 댓글은 추가하지 않음
 
@@ -66,14 +49,13 @@ const BoardDetail = () => {
       id: comments.length + 1, // 고유 ID
       text: newComment,
       date: new Date().toISOString().slice(0, 10), // 현재 날짜
+      author: `익명${commenterCount}`, // 작성자명 (익명1, 익명2, ...)
     };
 
     const updatedComments = [...comments, commentData];
     setComments(updatedComments); // 새 댓글 추가
     setNewComment(''); // 댓글 입력란 초기화
-
-    // localStorage에 댓글 저장
-    localStorage.setItem(`comments_${id}`, JSON.stringify(updatedComments));
+    setCommenterCount(commenterCount + 1); // 작성자 수 증가
   };
 
   // 좋아요 처리 함수 (한 번만 누를 수 있게 제한)
@@ -82,16 +64,18 @@ const BoardDetail = () => {
       const updatedLikes = likes + 1;
       setLikes(updatedLikes);
       setHasLiked(true);
-
-      // localStorage에 좋아요 수 및 사용자의 좋아요 상태 저장
-      localStorage.setItem(`likes_${id}`, updatedLikes);
-      localStorage.setItem(`hasLiked_${id}`, true);
     }
   };
 
   if (!post) {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
+
+  // 목록으로 돌아가기 버튼 클릭 시 페이지 이동
+  const handleBackClick = (e) => {
+    e.stopPropagation();
+    navigate('/boardList'); // '/board' 경로로 이동
+  };
 
   return (
     <div className="board-detail">
@@ -106,14 +90,21 @@ const BoardDetail = () => {
 
       {/* 좋아요 섹션 */}
       <div className="like-section">
-        <button onClick={handleLike} className="like-button" disabled={hasLiked}>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation(); // 부모로의 이벤트 전파를 막음
+            handleLike(); // 좋아요 로직 실행
+          }} 
+          className="like-button" 
+          disabled={hasLiked}
+        >
           좋아요
         </button>
-        <span>{likes}</span> {/* 좋아요 수만 표시 */}
+        <span>  {likes}</span> {/* 좋아요 수만 표시 */}
       </div>
 
       {/*댓글 목록*/}
-      <div className="comments-section">
+      <div className="comments-section" onClick={(e) => e.stopPropagation()}>
         <h3>댓글</h3>
         {comments.length === 0 ? (
           <p>댓글이 없습니다.</p>
@@ -121,7 +112,7 @@ const BoardDetail = () => {
           <ul className="comments-list">
             {comments.map((comment) => (
               <li key={comment.id}>
-                <p>{comment.text}</p>
+                <p><strong>{comment.author}</strong>: {comment.text}</p>
                 <span className="comment-date">{comment.date}</span>
               </li>
             ))}
@@ -130,7 +121,7 @@ const BoardDetail = () => {
       </div>
 
       {/*댓글 작성 폼*/}
-      <form className="comment-form" onSubmit={handleCommentSubmit}>
+      <form className="comment-form" onSubmit={handleCommentSubmit} onClick={(e) => e.stopPropagation()}>
         <textarea
           placeholder="댓글을 입력하세요..."
           value={newComment}
@@ -139,7 +130,10 @@ const BoardDetail = () => {
         <button type="submit">댓글 작성</button>
       </form>
 
-      <Link to="/board" className="back-link">목록으로 돌아가기</Link>
+      {/* 목록으로 돌아가기 버튼 */}
+      <button className="back-link" onClick={handleBackClick}>
+        목록으로 돌아가기
+      </button>
     </div>
   );
 };

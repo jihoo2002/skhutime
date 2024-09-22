@@ -1,20 +1,22 @@
-// 전체 페이지 스타일
+/* 전체 페이지 스타일 */
 .board-detail {
   max-width: 800px;
-  margin: 0 auto; // 가운데 정렬
+  margin: 20px auto; /* 상하 20px 간격, 가운데 정렬 */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-  /* 스크롤바 추가를 위한 스타일 */
-height: 100vh; /* 페이지의 높이를 설정 */
-overflow-y: auto; /* 세로 스크롤 활성화 */
+  position: relative; /* 다른 요소와 겹치지 않도록 설정 */
+  
+  /* 스크롤바를 게시물 상세 창 안에서만 발생시키기 위한 설정 */
+  height: 80vh; /* 게시물 상세 창 높이를 고정 (뷰포트의 80%) */
+  overflow-y: auto; /* 게시물 창 내부에서만 스크롤바 표시 */
 
   h1 {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #333;
+    cursor: default; /* 제목 클릭 동작 방지 */
   }
 
   p {
@@ -27,7 +29,7 @@ overflow-y: auto; /* 세로 스크롤 활성화 */
     }
   }
 
-  // 게시물 상단 정보 스타일
+  /* 게시물 상단 정보 스타일 */
   .post-info {
     display: flex;
     justify-content: space-between;
@@ -46,7 +48,7 @@ overflow-y: auto; /* 세로 스크롤 활성화 */
     }
   }
 
-  // 내용 스타일
+  /* 게시물 내용 스타일 */
   .post-content {
     padding: 20px 0;
     border-top: 1px solid #eee;
@@ -54,73 +56,74 @@ overflow-y: auto; /* 세로 스크롤 활성화 */
     margin-bottom: 20px;
   }
 
-  //댓글 섹션 스타일
+  /* 댓글 섹션 스타일 */
   .comments-section {
-      margin-top: 30px;
-  
-      h3 {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-        color: #333;
-      }
-  
-      .comments-list {
-        list-style: none;
-        padding: 0;
-  
-        li {
-          background-color: #fff;
-          padding: 10px;
-          margin-bottom: 10px;
-          border-radius: 4px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-          p {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 5px;
-          }
-  
-          .comment-date {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
-          }
-        }
-      }
-    }
-  
-    // 댓글 작성 폼 스타일
-    .comment-form {
-      margin-top: 20px;
-  
-      textarea {
-        width: 100%;
-        padding: 10px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
-        font-size: 1rem;
-        margin-bottom: 10px;
-        resize: vertical;
-      }
-  
-      button {
-        display: inline-block;
-        background-color: #28a745;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-  
-        &:hover {
-          background-color: #218838;
-        }
-      }
+    margin-top: 30px;
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #333;
     }
 
-  // 목록으로 돌아가기 링크 스타일
+    .comments-list {
+      list-style: none;
+      padding: 0;
+
+      li {
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        p {
+          font-size: 1rem;
+          color: #555;
+          margin-bottom: 5px;
+        }
+
+        .comment-date {
+          font-size: 0.8rem;
+          color: #888;
+          margin-top: 5px;
+        }
+      }
+    }
+  }
+
+  /* 댓글 작성 폼 스타일 */
+  .comment-form {
+    margin-top: 20px;
+    flex-shrink: 0; /* 댓글 작성 폼이 줄어들지 않도록 설정 */
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      resize: vertical;
+    }
+
+    button {
+      display: inline-block;
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+
+  /* 목록으로 돌아가기 링크 스타일 */
   .back-link {
     display: inline-block;
     margin-top: 20px;
@@ -134,36 +137,37 @@ overflow-y: auto; /* 세로 스크롤 활성화 */
     &:hover {
       background-color: #0056b3;
     }
+  }
 
-    //좋아요 스타일
-    .like-section {
-      margin: 20px 0;
-      display: flex;
-      align-items: center;
-    
-      .like-button {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-right: 10px;
-    
-        &:disabled {
-          background-color: #ccc;
-          cursor: not-allowed;
-        }
-    
-        &:hover:enabled {
-          background-color: #0056b3;
-        }
+  /* 좋아요 섹션 스타일 */
+  .like-section {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; /* 좋아요 버튼이 줄어들지 않도록 설정 */
+
+    .like-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
       }
-    
-      span {
-        font-size: 1.5rem;
-        color: #333;
+
+      &:hover:enabled {
+        background-color: #0056b3;
       }
+    }
+
+    span {
+      font-size: 1.5rem;
+      color: #333;
     }
   }
 }
